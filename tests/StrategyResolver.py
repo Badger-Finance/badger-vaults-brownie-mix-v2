@@ -1,3 +1,7 @@
+"""
+The StrategyResolver is used to perform snaposhot testing after each Vault / Strategy Action.
+Make sure to customize the entries below as tests will fail if you don't
+"""
 from helpers.StrategyCoreResolver import StrategyCoreResolver
 from rich.console import Console
 
@@ -25,27 +29,27 @@ class StrategyResolver(StrategyCoreResolver):
             Specifies extra check for ordinary operation on withdrawal
             Use this to verify that balances in the get_strategy_destinations are properly set
         """
-        assert True
+        assert True ## This is an optional check you may want to make
 
     def hook_after_confirm_deposit(self, before, after, params):
         """
             Specifies extra check for ordinary operation on deposit
             Use this to verify that balances in the get_strategy_destinations are properly set
         """
-        assert True
+        assert True ## This is an optional check you may want to make
 
     def hook_after_earn(self, before, after, params):
         """
             Specifies extra check for ordinary operation on earn
             Use this to verify that balances in the get_strategy_destinations are properly set
         """
-        assert True
+        assert True ## This is an optional check you may want to make
 
     def confirm_harvest(self, before, after, tx):
         """
             Verfies that the Harvest produced yield and fees
         """
-        assert True 
+        assert False ## You must implement this
         
         ## For basic strats the code below is sufficient
         console.print("=== Compare Harvest ===")
@@ -76,6 +80,6 @@ class StrategyResolver(StrategyCoreResolver):
 
         (Strategy Must Implement)
         """
-        assert True
+        assert False ## You must implement this
 
 

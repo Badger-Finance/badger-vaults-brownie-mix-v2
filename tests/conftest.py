@@ -2,9 +2,23 @@ import pytest
 from brownie import config
 from brownie import Contract
 
+## SET These Variables up for the testing suite
+WANT = "0x6b175474e89094c44da98b954eedeac495271d0f" ## Dai
+LP_COMPONENT = "0x028171bca77440897b824ca71d1c56cac55b68a3" ## aDAI
+REWARD_TOKEN = "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9" ## AAVE Token
+
+PROTECTED_TOKENS = [WANT, LP_COMPONENT, REWARD_TOKEN]
+## Fees in Basis Points
+DEFAULT_GOV_PERFORMANCE_FEE = 1000 ## TODO: Add to Vault.initialize
+DEFAULT_PERFORMANCE_FEE = 1000
+DEFAULT_WITHDRAWAL_FEE = 75 ## TODO: Add to Vault setWithdrawalFee
+
+## NOTE: There's a few more things you may need to change below, try running tests and adapt
+
+
 @pytest.fixture
 def gov(accounts):
-    yield accounts.at("0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52", force=True)
+    yield accounts.at("0xb65cef03b9b89f99517643226d76e286ee999e77", force=True)
 
 
 @pytest.fixture
@@ -37,14 +51,27 @@ def keeper(accounts):
     yield accounts[5]
 
 
+## Base tests call it token, badger tests call it want
 @pytest.fixture
 def token():
-    token_address = "0x6b175474e89094c44da98b954eedeac495271d0f"  # this should be the address of the ERC-20 used by the strategy/vault (DAI)
+    token_address = WANT  # this should be the address of the ERC-20 used by the strategy/vault (DAI)
     yield Contract(token_address)
+
 
 @pytest.fixture
 def want(token):
     yield token
+
+@pytest.fixture
+def lpComponent():
+    lp_address = LP_COMPONENT
+    yield Contract(lp_address)
+
+
+@pytest.fixture
+def reward():
+    reward_address = REWARD_TOKEN
+    yield Contract(reward_address)
 
 @pytest.fixture
 def amount(accounts, token, user):
@@ -83,9 +110,10 @@ def vault(pm, gov, rewards, guardian, management, token):
 
 @pytest.fixture
 def strategy(strategist, keeper, vault, Strategy, gov):
-    strategy = strategist.deploy(Strategy, vault)
+    strategy = strategist.deploy(Strategy)
+    strategy.initialize(vault, strategist, strategist, strategist)
     strategy.setKeeper(keeper)
-    vault.addStrategy(strategy, 10_000, 0, 2 ** 256 - 1, 1_000, {"from": gov})
+    vault.addStrategy(strategy, 10_000, 0, 2 ** 256 - 1, DEFAULT_PERFORMANCE_FEE, {"from": gov})
     yield strategy
 
 

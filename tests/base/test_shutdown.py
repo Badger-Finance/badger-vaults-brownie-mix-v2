@@ -1,6 +1,7 @@
 import brownie
 from brownie import Contract
 import pytest
+from helpers.constants import AddressZero
 
 
 def test_vault_emergency(
@@ -10,6 +11,9 @@ def test_vault_emergency(
   token.approve(vault.address, amount, {"from": user})
   vault.deposit(amount, {"from": user})
   assert token.balanceOf(vault.address) == amount
+
+  if(token.balanceOf(user) > 0):
+      token.transfer(AddressZero, token.balanceOf(user), {"from": user})
 
   print("stratDep1 ")
   print(strategy.estimatedTotalAssets())
@@ -49,6 +53,7 @@ def test_emergency_permissions_management(strategy, strategist, gov, guardian, m
 
 # TODO: Add tests that show proper operation of this strategy through "emergencyExit"
 #       Make sure to demonstrate the "worst case losses" as well as the time it takes
+# NOTE: lpComponent doesn't exist
 def test_emergency_exit(
     chain, accounts, token, vault, strategy, user, strategist, amount, RELATIVE_APPROX, lpComponent, borrowed, reward, incentivesController
 ):

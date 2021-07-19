@@ -6,7 +6,7 @@ pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
 // These are the core Yearn libraries
-import {BaseStrategy, StrategyParams} from "@yearnvaults/contracts/BaseStrategy.sol";
+import {BaseStrategy, StrategyParams} from "@badger/contracts/BaseStrategy.sol";
 import {SafeERC20, SafeMath, IERC20, Address} from "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 // Import interfaces for many popular DeFi projects, or add your own!
@@ -17,11 +17,21 @@ contract Strategy is BaseStrategy {
     using Address for address;
     using SafeMath for uint256;
 
-    constructor(address _vault) public BaseStrategy(_vault) {
-        // You can set these parameters on deployment to whatever you want
-        // maxReportDelay = 6300;
+    function initialize(
+        address _vault,
+        address _strategist,
+        address _rewards,
+        address _keeper
+    ) external {
+        BaseStrategy._initialize(_vault, _strategist, _rewards, _keeper);
+
+        // Do more stuff here if you want
+        // minReportDelay = 0;
+        // maxReportDelay = 86400;
         // profitFactor = 100;
         // debtThreshold = 0;
+
+        // Do one-off approvals here
     }
 
     // ******** OVERRIDE THESE METHODS FROM BASE CONTRACT ************
