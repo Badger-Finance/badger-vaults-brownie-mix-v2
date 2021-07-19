@@ -111,7 +111,7 @@ contract Strategy is BaseStrategy {
     //
     // Example:
     //
-    //    function protectedTokens() internal override view returns (address[] memory) {
+    //    function protectedTokens() public override view returns (address[] memory) {
     //      address[] memory protected = new address[](3);
     //      protected[0] = tokenA;
     //      protected[1] = tokenB;
@@ -119,7 +119,7 @@ contract Strategy is BaseStrategy {
     //      return protected;
     //    }
     function protectedTokens()
-        internal
+        public
         view
         override
         returns (address[] memory)
